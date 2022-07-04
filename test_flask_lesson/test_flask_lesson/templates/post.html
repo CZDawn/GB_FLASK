@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+    {% include 'includes/inc_header.html'%}
+<div style="display: flex;">
+  <article style="display: flex; flex-direction: column;"> 
+    <img style="margin-right: 5px;" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+    <a href="{{ url_for('users.user_posts', username=post.author.username) }}" style="margin: 0 auto">{{ post.author.username }}</a>
+  </article>
+  
+  <div style="margin-bottom: 20px;">
+    <div>
+      <h4>{{ post.title }}</h4>
+      <small>Published {{ post.date_posted.strftime('%A, %d %B %Y %I:%M %p') }}</small>
+      <br>
+      <br>
+      <p>{{ post.content }}</p>
+    </div>
+    <div style="font-size: 20px;">
+      <!-- <i class="fa fa-heart-o"></i>
+      <i class="fa fa-bookmark-o"></i> -->
+      {% if post.author == current_user %}
+        <div style="font-size: 20px;">
+            {% if post.author == current_user %}
+                <a href="{{url_for('posts.update_post', post_id=post.id) }}">Update</a>
+                <form action="{{ url_for('posts.delete_post', post_id=post.id) }}" method="POST">
+                    <input class="button" type="submit" value="Delete">
+                </form>
+                <!-- <a href="{{url_for('posts.delete_post', post_id=post.id) }}">Delete</a>
+            <button type="button" data-toggle="modal" data-target="#deleteModal">Delete</button> -->
+            {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+  
+<!-- Modal -->
+<!--
+  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-title">
+          <h5 class="modal-title" id="deleteModalLabel">Delette post?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" data-dismiss="modal">Close</button>
+          <form action="{{ url_for('posts.delete_post', post_id=post.id) }}" method="POST">
+            <input class="btn btn-danger" type="submit" value="Delete">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+-->
+{% endblock content %}
