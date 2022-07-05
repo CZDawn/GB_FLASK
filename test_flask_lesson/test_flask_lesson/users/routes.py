@@ -3,7 +3,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 
 from test_flask_lesson import db, bcrypt
 from test_flask_lesson.models import User, Post
-from test_flask_lesson.users.utils import save_picture
+from test_flask_lesson.users.utils import save_picture, send_reset_email
 from test_flask_lesson.users.forms import RegistrationForm, LoginForm, \
     UpdateAccountForm, ResetPasswordForm, \
     RequestResetPasswordForm
@@ -79,3 +79,33 @@ def user_posts(username):
     user = User.query.filter_by(username=username).first_or_404()
     posts = Post.query.filter_by(author=user).order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
     return render_template('user_posts.html', posts=posts, user=user)
+
+@users.route("/reset_password", methods=['GET', 'POST'])
+def reset_request():
+    if current_user.is_authenticated:
+        return redirect(url_for('posts.allposts'))
+    form = RequestResetPasswordForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        send_reset_email(user)
+        flash('We send reset password message to your email.', 'info')
+        return redirect(url_for('users.login'))
+    return render_template('reset_request.html', title='Reset password', form=form)
+
+@users.route("/reset_password/<token>", methods=['GET', 'POST'])
+def reset_token(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('posts.allposts'))
+    user = User.verify_reset_token(token)
+    if user is None:
+        flash('This is not a valid or expired token', 'warning')
+        return redirect(url_for('users.reset_request'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user.password = hashed_password
+        db.session.commit()
+        flash('Your password updated! Now ypu can login', 'success')
+        return redirect(url_for('users.login'))
+    return render_template('reset_token.html', title='Reset password', form=form)
+

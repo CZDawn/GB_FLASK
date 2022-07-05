@@ -40,6 +40,9 @@
             </fieldset>
             <div class="12u">
                 {{ form.submit(class="button") }}
+                <small>
+                    <a href="{{ url_for('users.reset_request') }}">Forgot Password?</a>
+                </small>
             </div>
             <small style="font-size: 15px; font-weight: 500;">
                 Do you need an account? <a class="ml-2" href="{{ url_for('users.register') }}">Register</a>
