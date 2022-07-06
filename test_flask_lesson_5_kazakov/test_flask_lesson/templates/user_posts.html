@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+    {% include 'includes/inc_header.html'%}
+    <h1>Посты опубликованы пользователем {{ user.username }} ({{ posts.total }})</h1>
+    {% for post in posts.items %}
+    <div style="display: flex;">
+      <article style="display: flex; flex-direction: column;"> 
+        <img style="margin-right: 5px;" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+        <a href="{{ url_for('users.user_posts', username=post.author.username) }}" style="margin: 0 auto">{{ post.author.username }}</a>
+      </article>
+      
+      <div style="margin-bottom: 20px;">
+        <div>
+          <h4><a href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></h4>
+
+          <small>Опубликовано {{ post.date_posted.strftime('%A, %d %B %Y %I:%M %p') }}</small>
+          <br>
+          <br>
+          <p>{{ post.content }}</p>
+        </div>
+        <!-- <div class="card-footer" style="font-size: 20px;">
+          <i class="fa fa-heart-o"></i>
+          <i class="fa fa-bookmark-o"></i>
+        </div> -->
+      </div>
+    </div>
+    {% endfor %}
+
+    
+    {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+      {% if page_num %}
+        {% if posts.page == page_num %}
+          <a class="button" href="{{ url_for('users.user_posts', username=user.username, page=page_num) }}">{{ page_num }}</a>
+        {% else %}
+          <a class="button" href="{{ url_for('users.user_posts', username=user.username, page=page_num) }}">{{ page_num }}</a>
+        {% endif %}
+      {% else %}
+        ...
+      {% endif %}
+    {% endfor %}
+{% endblock content %}
