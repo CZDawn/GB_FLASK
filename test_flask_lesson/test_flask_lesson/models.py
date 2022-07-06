@@ -21,8 +21,8 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"
 
-    def get_reset_token(self):
-        serializer = Serializer(current_app.config['SECRET_KEY'])
+    def get_reset_token(self, expire_sec=1800):
+        serializer = Serializer(current_app.config['SECRET_KEY'], expire_sec)
         return serializer.dumps({'user_id': self.id}).decode('utf-8')
 
     @staticmethod

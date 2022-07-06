@@ -25,7 +25,9 @@ def create_app():
     from test_flask_lesson.main.routes import main
     from test_flask_lesson.users.routes import users
     from test_flask_lesson.posts.routes import posts
+    from test_flask_lesson.errors.handlers import errors
     app.register_blueprint(main)
     app.register_blueprint(users)
     app.register_blueprint(posts)
+    app.register_blueprint(errors)
     return app
