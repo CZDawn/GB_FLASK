@@ -59,6 +59,19 @@
                         {{ form.confirm_password() }}
                     {% endif %}
                 </div>
+                <div class="6u 12u(3)">
+                    {{ form.role.label() }}
+                    {% if form.role.errors %}
+                        {{ form.role() }}
+                        <div class="invalid-feedback">
+                            {% for error in form.role.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.role() }}
+                    {% endif %}
+                </div>
             </fieldset>
             <div class="12u">
                 {{ form.submit(class="button") }}

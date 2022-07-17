@@ -25,7 +25,10 @@
                 <li><a href="{{ url_for('posts.allposts') }}">Posts</a></li>
                 <li><a href="{{ url_for('posts.new_post') }}">New post</a></li>
                 <li><a href="{{ url_for('users.account') }}">Profile</a></li>
-                <li><a href="{{ url_for('users.logout') }}">Exit</a></li>
+                <li><a href="{{ url_for('users.logout') }}">Exit</a></li>            
+                {% if current_user.role == 'admin' %}
+                    <li><a href="{{ url_for('admin.index') }}">Go to admin!</a></li>
+                {% endif %}
             {% else %}
                 <li><a href="{{ url_for('users.login') }}">Login</a></li>
                 <li><a href="{{ url_for('users.register') }}">Register</a></li>

@@ -3,7 +3,7 @@
     {% include 'includes/inc_header.html'%}
 <div style="display: flex;">
   <article style="display: flex; flex-direction: column;"> 
-    <img style="margin-right: 5px;" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+    <img style="margin-right: 5px; width: 150px; height: 150px;" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
     <a href="{{ url_for('users.user_posts', username=post.author.username) }}" style="margin: 0 auto">{{ post.author.username }}</a>
   </article>
   
@@ -30,6 +30,40 @@
             {% endif %}
         </div>
       {% endif %}
+    </div>
+    {% if post.comments %}
+        <h2>Comments</h2>
+        <p>
+            {% for comment in post.comments | reverse %}
+                <p>{{ comment.text }}</p>
+                <p>
+                    <small>Author: {{ comment.username }}</small>
+                    <small>Date: {{ comment.timestamp.strftime('%A, %d %B %Y %I:%M %p') }}</small>
+                </p>
+                {% if comment.username == current_user.username %}
+                    <form action="{{ url_for('posts.delete_comment', comment_id=comment.id) }}" method="POST">
+                        <input class="submit" type="submit" value="Delete">
+                    </form>
+                {% endif %}
+                <hr>
+                {% endfor %}
+    {% endif %}
+    <div class="likes">
+        <a href="{{ url_for('posts.like_post', post_id=post.id) }}" class="button">Like</a>
+        <p>{{ post.likes.count() }}</p>
+    </div>
+    <div>
+        <h2>Leave comment</h2>
+        <form action="{{ url_for('posts.post', post_id=post.id) }}", method="POST">
+            {{ form.hidden_tag() }}
+        <fieldset>
+            <div class="6u 12u(3)">
+                {{ form.comment_text() }}
+            </div>
+        </fieldset>
+        <div class="12u">
+            {{ form.submit(class="button") }}
+        </div>
     </div>
   </div>
 </div>
